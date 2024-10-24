@@ -23,7 +23,7 @@
 version: '3'
 services:
   sim:
-    image: f1tenth_gym_ros
+    image: f1tenth_gym_ros_sim_1
     build: ./
     volumes: 
       - .:/sim_ws/src/f1tenth_gym_ros
