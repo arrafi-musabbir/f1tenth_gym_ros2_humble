@@ -5,36 +5,43 @@ This is a containerized ROS communication bridge for the F1TENTH gym environment
 
 **Supported System:**
 
-- Ubuntu (tested on 20.04) native with ROS 2
-- Ubuntu (tested on 20.04) with an NVIDIA gpu and nvidia-docker2 support
-- Windows 10, macOS, and Ubuntu without an NVIDIA gpu (using noVNC)
+- Ubuntu (tested on 22.04) native with ROS 2 (HUMBLE)
+- Ubuntu (tested on 22.04) with an NVIDIA gpu and nvidia-docker2 support
 
-This installation guide will be split into instruction for installing the ROS 2 package natively, and for systems with or without an NVIDIA gpu in Docker containers.
+This installation guide will be split into instructions for installing the ROS 2 package natively and for systems with or without an NVIDIA GPU in Docker containers.
 
-## Native on Ubuntu 20.04
+## Native on Ubuntu 22.04
+
+#### You will need to have `Python 3.10.12` and `pip 22.0.2` in your system
 
 **Install the following dependencies:**
-- **ROS 2** Follow the instructions [here](https://docs.ros.org/en/foxy/Installation.html) to install ROS 2 Foxy.
+- **ROS 2 HUMBLE** Follow the instructions [here](https://docs.ros.org/en/humble/Installation.html) to install ROS 2 HUMBLE.
 - **F1TENTH Gym**
   ```bash
-  git clone https://github.com/f1tenth/f1tenth_gym
-  cd f1tenth_gym && pip3 install -e .
+  git clone https://github.com/f1tenth/f1tenth_gym.git
+  cd f1tenth_gym
+  virtualenv gym_env
+  source gym_env/bin/activate
+  pip install -e .
   ```
 
 **Installing the simulation:**
-- Create a workspace: ```cd $HOME && mkdir -p sim_ws/src```
+- Create a workspace:
+  ```
+  cd $HOME && mkdir -p sim_ws/src
+  ```
 - Clone the repo into the workspace:
   ```bash
   cd $HOME/sim_ws/src
   git clone https://github.com/f1tenth/f1tenth_gym_ros
   ```
 - Update correct parameter for path to map file:
-  Go to `sim.yaml` [https://github.com/f1tenth/f1tenth_gym_ros/blob/main/config/sim.yaml](https://github.com/f1tenth/f1tenth_gym_ros/blob/main/config/sim.yaml) in your cloned repo, change the `map_path` parameter to point to the correct location. It should be `'<your_home_dir>/sim_ws/src/f1tenth_gym_ros/maps/levine'`
+  Go to `sim.yaml` [https://github.com/f1tenth/f1tenth_gym_ros/blob/main/config/sim.yaml](https://github.com/arrafi-musabbir/f1tenth_gym_ros2_humble/blob/main/config/sim.yaml) in your cloned repo, change the `map_path` parameter to point to the correct location. It should be `'sim_ws/src/f1tenth_gym_ros/maps/levine'`
 - Install dependencies with rosdep:
   ```bash
-  source /opt/ros/foxy/setup.bash
+  source /opt/ros/humble/setup.bash
   cd ..
-  rosdep install -i --from-path src --rosdistro foxy -y
+  rosdep install -i --from-path src --rosdistro humble -y
   ```
 - Build the workspace: ```colcon build```
 
@@ -76,7 +83,7 @@ docker-compose up
 ``` 
 3. In a separate terminal, run the following, and you'll have the a bash session in the simulation container. `tmux` is available for convenience.
 ```bash
-docker exec -it f1tenth_gym_ros-sim-1 /bin/bash
+docker exec -it f1tenth_gym_ros_sim_1 /bin/bash
 ```
 4. In your browser, navigate to [http://localhost:8080/vnc.html](http://localhost:8080/vnc.html), you should see the noVNC logo with the connect button. Click the connect button to connect to the session.
 
@@ -85,7 +92,7 @@ docker exec -it f1tenth_gym_ros-sim-1 /bin/bash
 1. `tmux` is included in the contianer, so you can create multiple bash sessions in the same terminal.
 2. To launch the simulation, make sure you source both the ROS2 setup script and the local workspace setup script. Run the following in the bash session from the container:
 ```bash
-$ source /opt/ros/foxy/setup.bash
+$ source /opt/ros/humble/setup.bash
 $ source install/local_setup.bash
 $ ros2 launch f1tenth_gym_ros gym_bridge_launch.py
 ```
